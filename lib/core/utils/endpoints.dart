@@ -23,16 +23,15 @@ class ApiEndpoints {
 
   static const String returnBottleUrl =
       '$baseUrl/orderdetails/orders/{userId}/returned-bottles';
-        static const String ordersWithSubUrl = '$baseUrl/orderdetails/{userId}';
-          static const String stopPlan = '$baseUrl/orderdetails/stop-plan/{planId}';
+  static const String ordersWithSubUrl = '$baseUrl/orderdetails/{userId}';
+  static const String stopPlan = '$baseUrl/orderdetails/stop-plan/{planId}';
 
-            static const String changePlan = '$baseUrl/orderdetails/changeplan';
+  static const String changePlan = '$baseUrl/orderdetails/changeplan';
 
-              static const String selectPlanUrl = '$baseUrl/plan';
+  static const String selectPlanUrl = '$baseUrl/plan';
 
-              static const String customerProfileUrl = '$baseUrl/customer/{userId}';
+  static const String customerProfileUrl = '$baseUrl/customer/{userId}';
 
-
-
-
+  static const String requestOtpUrl = '$baseUrl/admin/forgot-password';
+  static const String resetPassUrl = '$baseUrl/admin/reset-password';
 }

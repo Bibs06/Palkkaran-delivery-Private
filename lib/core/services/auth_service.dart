@@ -39,6 +39,50 @@ class AuthService {
     }
   }
 
+   static Future<MessageModel?> requestOtp(Map<String, dynamic> payload) async {
+    try {
+      var response = await client.post(Uri.parse(ApiEndpoints.requestOtpUrl),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(payload));
+      if (response.statusCode == 200) {
+        
+        return MessageModel(message: 'Otp send successfully', success: true);
+      } else {
+        var responseData = jsonDecode(response.body);
+        return MessageModel(message: responseData['message'], success: false);
+      }
+    } on SocketException catch (e) {
+      return MessageModel(message: 'Network issue', success: false);
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
+
+  static Future<MessageModel?> resetPassword(Map<String, dynamic> payload) async {
+    try {
+      var response = await client.post(Uri.parse(ApiEndpoints.resetPassUrl),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(payload));
+      if (response.statusCode == 200) {
+        
+        return MessageModel(message: 'Password changed successfully', success: true);
+      } else {
+        var responseData = jsonDecode(response.body);
+        return MessageModel(message: responseData['message'], success: false);
+      }
+    } on SocketException catch (e) {
+      return MessageModel(message: 'Network issue', success: false);
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
+
   static Future<MessageModel?> signUp(Map<String, dynamic> payload) async {
     try {
       var response = await client.post(Uri.parse(ApiEndpoints.loginUrl),

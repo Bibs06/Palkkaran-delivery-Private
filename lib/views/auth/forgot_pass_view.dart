@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:palkkaran/core/common_widgets/custom_btn.dart';
 import 'package:palkkaran/core/common_widgets/custom_snackbar.dart';
+import 'package:palkkaran/core/common_widgets/custom_toast.dart';
 import 'package:palkkaran/core/common_widgets/custom_txt_field.dart';
+import 'package:palkkaran/core/enums/view_state.dart';
 import 'package:palkkaran/core/navigate.dart';
 import 'package:palkkaran/core/utils/colors.dart';
+import 'package:palkkaran/core/view_models/auth_view_model.dart';
 import 'package:palkkaran/views/auth/otp_view.dart';
 
-class ForgotPasswordView extends StatelessWidget {
+class ForgotPasswordView extends ConsumerWidget {
   const ForgotPasswordView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController phoneController = TextEditingController();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final TextEditingController emailController = TextEditingController();
     return Scaffold(
       backgroundColor: ColorUtils.black,
       body: Stack(
@@ -67,7 +71,7 @@ class ForgotPasswordView extends StatelessWidget {
                         height: 10.h,
                       ),
                       Text(
-                        'Phone',
+                        'Email',
                         style: TextStyle(
                             color: ColorUtils.black,
                             fontSize: 15.sp,
@@ -77,9 +81,9 @@ class ForgotPasswordView extends StatelessWidget {
                         height: 10.h,
                       ),
                       CustomTxtField(
-                        label: 'Phone',
+                        label: 'Email',
                         textInputType: TextInputType.number,
-                        controller: phoneController,
+                        controller: emailController,
                         backgroundColor: ColorUtils.lightBlue,
                         borderRadius: 10.sp,
                         borderColor: Colors.transparent,
@@ -87,26 +91,35 @@ class ForgotPasswordView extends StatelessWidget {
                       SizedBox(
                         height: 20.h,
                       ),
-                      CustomBtn(
-                          color: ColorUtils.kPrimary,
-                          btnText: 'Request Otp',
-                          padH: 10.w,
-                          padV: 10.h,
-                          height: 50.h,
-                          borderRadius: 12.sp,
-                          onTap: () {
-                            if (phoneController.text.isEmpty) {
-                              customSnackBar(
-                                  context: context,
-                                  title: 'Phone number is empty');
-                            } else if (phoneController.text.length != 10) {
-                              customSnackBar(
-                                  context: context,
-                                  title: 'Check your phone number');
-                            } else {
-                              Go.to(context, OtpView());
-                            }
-                          })
+                      Consumer(
+                        builder: (context,ref,child) {
+                          final model = ref.watch(authProvider);
+                          return CustomBtn(
+                              color: ColorUtils.kPrimary,
+                              btnText: 'Request Otp',
+                              padH: 10.w,
+                              padV: 10.h,
+                              height: 50.h,
+                              borderRadius: 12.sp,
+                              isLoading: model == ViewState.loading,
+                              
+                              onTap: () {
+                                if (emailController.text.isEmpty) {
+                                  customSnackBar(
+                                      context: context, title: 'email is empty');
+                                } else {
+                                  ref.read(authProvider.notifier).requestOtp({
+                                    'email': emailController.text
+                                  }).then((response) {
+                                    customToast(response!.message);
+                                    if (response!.success) {
+                                      Go.to(context, OtpView(email: emailController.text,));
+                                    }
+                                  });
+                                }
+                              });
+                        }
+                      )
                     ],
                   ),
                 ),
@@ -125,7 +138,6 @@ class ForgotPasswordView extends StatelessWidget {
                 Icons.arrow_back_ios,
                 color: ColorUtils.grey,
                 size: 22.sp,
-                
               ),
               style: ButtonStyle(
                   backgroundColor:

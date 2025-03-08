@@ -15,6 +15,20 @@ class AuthViewModel extends StateNotifier<ViewState> {
     return messageModel;
   }
 
+  Future<MessageModel?> requestOtp(Map<String, dynamic> payload) async {
+    state = ViewState.loading;
+    MessageModel? messageModel = await AuthService.requestOtp(payload);
+    state = ViewState.idle;
+    return messageModel;
+  }
+
+   Future<MessageModel?> resetPassword(Map<String, dynamic> payload) async {
+    state = ViewState.loading;
+    MessageModel? messageModel = await AuthService.resetPassword(payload);
+    state = ViewState.idle;
+    return messageModel;
+  }
+
   Future<MessageModel?> signUp(Map<String, dynamic> payload) async {
     state = ViewState.loading;
     MessageModel? messageModel = await AuthService.signUp(payload);
