@@ -170,22 +170,13 @@ class OrderViewModel extends StateNotifier<OrderState> {
     );
 
     InvoiceModel? invoiceModel = await OrderService.getInvoice(userID);
-    num total = 0;
-    num pending = 0;
-    if (invoiceModel != null && invoiceModel.invoice.isNotEmpty) {
-      for (var data in invoiceModel.invoice) {
-        total = data.invoiceData.total + total;
 
-        pending = data.invoiceData.customer.paidAmounts
-            .fold(0, (sum, item) => sum + (item.amount as num));
-      }
-    }
+    invoiceModel!.data.sort((a,b)=>b.month.compareTo(a.month));
 
     state = state.copyWith(
-        paymentHistoryState: ViewState.idle,
-        invoiceModel: invoiceModel,
-        pending: pending,
-        total: total);
+      paymentHistoryState: ViewState.idle,
+      invoiceModel: invoiceModel,
+    );
   }
 
   Future<void> getBottleInfo(String userId) async {
@@ -249,9 +240,8 @@ class OrderViewModel extends StateNotifier<OrderState> {
           tommorowQuantityState: ViewState.idle,
           tommorowsQuantity: data,
           tommorowsLtr: totalLiters);
-    }
-    else {
-        state = state.copyWith(
+    } else {
+      state = state.copyWith(
           tommorowQuantityState: ViewState.idle,
           tommorowsQuantity: null,
           tommorowsLtr: 0);

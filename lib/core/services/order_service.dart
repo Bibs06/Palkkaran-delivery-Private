@@ -194,10 +194,11 @@ class OrderService {
       }, Uri.parse(ApiEndpoints.invoiceUrl.replaceFirst('{userId}', userId)));
 
       if (response.statusCode == 200) {
-        List<dynamic> responseData = jsonDecode(response.body);
-        // log(responseData.toString());
+        Map<String,dynamic> responseData = jsonDecode(response.body);
+               List<dynamic> data = responseData['monthlyData'];
 
-        return InvoiceModel.fromJson(responseData);
+
+        return InvoiceModel.fromJson(data);
       } else {
         // log(response.body);
         return null;

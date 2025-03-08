@@ -103,53 +103,7 @@ class _InvoiceViewState extends ConsumerState<InvoiceView> {
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold)),
       ),
-      bottomSheet: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22.sp),
-          color: ColorUtils.white,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        height: 140.h,
-        width: double.infinity,
-        child: Consumer(builder: (
-          context,
-          ref2,
-          child,
-        ) {
-          final model = ref2.watch(orderProvider);
-          if (model.invoiceModel == null ||
-              model.invoiceModel!.invoice.isEmpty) {
-            return SizedBox.shrink();
-          } else {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Total Amount ${model.total}',
-                  style: TextStyle(
-                      color: ColorUtils.black,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Amount Paid ${model.pending}',
-                  style: TextStyle(
-                      color: ColorUtils.black,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Pending ${model.total! - model.pending!}',
-                  style: TextStyle(
-                      color: ColorUtils.black,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            );
-          }
-        }),
-      ),
+     
       body: Consumer(
         builder: (context, ref, child) {
           final model = ref.watch(orderProvider);
@@ -160,7 +114,7 @@ class _InvoiceViewState extends ConsumerState<InvoiceView> {
               ),
             );
           } else if (model.invoiceModel == null ||
-              model.invoiceModel!.invoice.isEmpty) {
+              model.invoiceModel!.data.isEmpty) {
             return Center(
               child: Text(
                 'No payment history',
@@ -172,43 +126,35 @@ class _InvoiceViewState extends ConsumerState<InvoiceView> {
             );
           } else {
             return ListView.builder(
-              itemCount: model.invoiceModel!.invoice.length,
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              itemCount: model.invoiceModel?.data.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(
-                    model.invoiceModel!.invoice[index].invoiceData
-                        .invoiceDetails.invoiceNo,
-                    style: TextStyle(
-                        color: ColorUtils.black,
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Column(
+                // model.invoiceModel!.data!.reversed;
+                return Container(
+                  margin: EdgeInsets.only(bottom: 10.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  decoration: BoxDecoration(
+                      color: ColorUtils.lightBlue,
+                      borderRadius: BorderRadius.circular(12.sp),
+                      border: Border.all(color: ColorUtils.kPrimary)),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Rs ${model.invoiceModel!.invoice[index].invoiceData.total.toString()}',
-                        style: TextStyle(
-                          color: ColorUtils.black,
-                          fontSize: 20.sp,
-                        ),
-                      ),
+                    
+                          Text(
+                            model.invoiceModel!.data[index].month,
+                            style: TextStyle(
+                                color: ColorUtils.black,
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                             detailRow(title: 'Paid', value: model.invoiceModel!.data[index].paid.toString()),
+
+                            detailRow(title: 'Balance', value: model.invoiceModel!.data[index].balance.toString()),
+
+                            detailRow(title: 'Total Amount', value: model.invoiceModel!.data[index].totalAmount.toString())
                     ],
-                  ),
-                  trailing: Text(
-                    model.invoiceModel!.invoice[index].invoiceData
-                                .invoiceDetails.paymentStatus ==
-                            'unpaid'
-                        ? 'unPaid'
-                        : 'paid',
-                    style: TextStyle(
-                      color: model.invoiceModel!.invoice[index].invoiceData
-                                  .invoiceDetails.paymentStatus ==
-                              'unpaid'
-                          ? Colors.red
-                          : Colors.green,
-                      fontSize: 15.sp,
-                    ),
                   ),
                 );
               },
@@ -216,6 +162,47 @@ class _InvoiceViewState extends ConsumerState<InvoiceView> {
           }
         },
       ),
+    );
+  }
+
+  Row detailRow({required String title, required String value}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: ColorUtils.black,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Spacer(),
+        Expanded(
+         flex: 0,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Rs ${value}',
+                style: TextStyle(
+                  color: ColorUtils.black,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

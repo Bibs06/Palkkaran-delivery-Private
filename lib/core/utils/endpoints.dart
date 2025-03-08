@@ -11,8 +11,7 @@ class ApiEndpoints {
       '$baseUrl/customer/routeno-based-customer/{routeId}';
   static const String paymentHistoryUrl =
       '$baseUrl/customer/paid-amounts/{csId}';
-  static const String invoiceUrl = '$baseUrl/orderdetails/invoices/{userId}';
-  static const String addPaymentUrl =
+ static const String invoiceUrl = '$baseUrl/orderdetails/monthlyinvoice/{userId}';  static const String addPaymentUrl =
       '$baseUrl/customer/add-paid-amount/customer';
   static const String tommorowQuantityUrl =
       '$baseUrl/orderdetails/tomorrow-orders/routes';
